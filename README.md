@@ -4,17 +4,17 @@ Este é um programa escrito em Python. O programa lê arquivos de entrada, carre
 
 ## Índice
 
-- [Visão geral](#visao-geral)
+- [Visão geral](#visão-geral)
 - [Funcionalidades](#funcionalidades)
 - [Arquivos de entrada](#arquivos-de-entrada)
 - [Banco de dados](#banco-de-dados)
 - [Tecnologias utilizadas](#tecnologias-utilizadas)
-- [Versão em Pandas](#versao-em-pandas)
-- [Versão em Spark](#versao-em-spark)
-- [Instalação](#instalacao)
+- [Versão em Pandas](#versão-em-pandas)
+- [Versão em Spark](#versão-em-spark)
+- [Instalação](#instalação)
 - [Modelagem de entidades e relacional](#modelagem-de-entidades-e-relacional)
-- [Relatórios do Power BI](#relatórios-do-power-bi)
-- [Grupo](#grupo)
+- [Relatórios do Power BI](#relatórios-em-power-bi)
+- [Grupo - SheAnalyses](#grupo---sheanalyses)
 
 ## Visão geral
 
@@ -93,8 +93,6 @@ As tecnologias utilizadas em nossas aplicações foram:
 #### 1 - Estrutura do projeto:
 
 ```
-
-
 ├── README.md
 ├── estrutura.txt
 ├── files
