@@ -1,9 +1,7 @@
-from pyspark.sql.utils import AnalysisException
-
 class Database():
     '''
-    A classe Database procura realizar ações que manupulam as tabelas e dados de um database específico.
-    Atenção: Para realizar essas ações, é preciso se conectar através do JDBC.
+    The Database class aims to perform actions that manipulate tables and data from a specific database.
+    Attention: To perform these actions, you need to connect through JDBC.
     '''
 
     def __init__(self, *, jdbc_url, database, username, password, driver):
@@ -13,27 +11,25 @@ class Database():
         self.password = password
         self.driver = driver
 
-    def criar_tabela(self, df, nome_tabela):
-        '''O método "criar_tabela" procura criar uma tabela no database especificado a partir de um dataframe já definido.'''
+    def create_table(self, df, table_name):
+        '''The "create_table" method aims to create a table in the specified database from an already defined dataframe.'''
+        
         self.df = df
-        self.nome_tabela = nome_tabela
+        self.table_name = table_name
 
         
-        # Tenta criar uma tabela no database especificado.
+        # Tries to create a table in the specified database.
         df.write \
             .format("jdbc") \
             .option("url", self.jdbc_url) \
             .option("database", self.database)\
-            .option("dbtable", self.nome_tabela) \
+            .option("dbtable", self.table_name) \
             .option("user", self.username) \
             .option("password", self.password) \
             .option("driver", self.driver) \
             .mode("overwrite") \
             .save()
 
-    def atualizar_tabela():
-        pass
-
-    def remover_tabela():
-        pass
-    
+        def show_table (self):
+            '''This method aims to show the tables already created in the database.'''
+            pass

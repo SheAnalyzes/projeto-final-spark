@@ -1,4 +1,3 @@
-from pyspark.sql.functions import col
 from pyspark.sql.functions import col, to_timestamp, format_number
 from pyspark.sql.types import IntegerType, FloatType
 from pyspark.sql import Row
@@ -6,79 +5,81 @@ from pyspark.sql import Row
 
 
 class Dataframe():
-    '''A classe Dataframe tem o objetivo de proporcionar métodos capazes de ler arquivos CSVs, gerar dataframes e modificá-los.'''
-     
-    def __init__(self, csv_path,categoria):
+    '''The Dataframe class aims to provide methods capable of reading CSV files, generating dataframes, and modifying them.'''
+
+    def __init__(self, csv_path, category):
         self.csv_path = csv_path
-        self.categoria = categoria
+        self.category = category
         
-    def _adicionar_header(self):
-        '''O método "_adicionar_header" realiza algumas etapas para adicionar o header correto ao dataframe.'''
+    def _add_header(self):
+        '''The "_add_header" method performs a well-defined process to add the correct header to the dataframe.'''
 
-        # Encontrando a linha que será o header e salvando num dataframe.
-        self.header = self.df_bruto.filter(col("_c0") == "id").limit(1)
+        # Finding the row that will be the header and saving it to a dataframe.
+        self.header = self.raw_df.filter(col("_c0") == "id").limit(1)
 
-        # Excluindo do dataframe bruto a linha que contém seu futuro header. 
-        df_filtrado = self.df_bruto.where((col("_c0") != "id"))
+        # Excluding from the raw dataframe the row that contains its future header. 
+        filtered_df = self.raw_df.where((col("_c0") != "id"))
 
-        # Gerando um dataframe com o header certo.
+        # Generating a dataframe with the correct header.
         header_columns = self.header.first()
-        self.df_corrigido = df_filtrado.toDF(*header_columns)
+        self.fixed_df = filtered_df.toDF(*header_columns)
 
-        return self.df_corrigido
-
-    def _corrigir_schema(self, df):
-
-        primeira_linha = df.first()
+        return self.fixed_df
+    
+    def _fix_schema(self, df):
+        '''The "_fix_schema" method aims to create a series of actions that, at the end, fixes the schematype of the dataframe generated from any CSV file.'''
         
-        row = Row(*primeira_linha)
+        first_row = df.first()
+        row = Row(*first_row)
+        schema = df.schema
 
-        esquema = df.schema
 
-        # Converte o objeto Row em uma lista e itera sobre ela
-        for valor in primeira_linha:
-            # obtém a posição do valor na lista de valores da linha
-            posicao_valor = row.index(valor)
+        for value in first_row:
 
-            # obtém o nome da coluna a partir da posição
-            nome_coluna = esquema[posicao_valor].name
-            if isinstance (valor, str) and ':' in valor:
-                # Use o método strptime() para converter a string em um objeto datetime
-                #converte as colunas data em timestamp, mas se ela não for convertivel, permanece o valor original
-               df = df.withColumn(nome_coluna, to_timestamp(col(nome_coluna), "yyyy-MM-dd HH:mm:ss Z"))
-             
-            elif isinstance(valor, str) and valor.isdigit():
-                #converte o tipo da coluna para int
-                df = df.withColumn(nome_coluna, col(nome_coluna).cast(IntegerType()))
-            elif isinstance(valor,str) and '.' in valor and '@' not in valor:
-                #converte o tipo da coluna para int
-                df = df.withColumn(nome_coluna, col(nome_coluna).cast(FloatType()))
-                df = df.withColumn(nome_coluna, format_number(col(nome_coluna), 2))
+            # Get the position of the value in the row's list of values
+            value_position = row.index(value)
+
+            # Get the column name from the position
+            column_name = schema[value_position].name
+            
+            # Check if the column type need to be converted to datatime 
+            if isinstance(value, str) and ':' in value:
+                df = df.withColumn(column_name, to_timestamp(col(column_name), "yyyy-MM-dd HH:mm:ss Z"))
+            
+            # Check if the column type need to be converted to an integer
+            elif isinstance(value, str) and value.isdigit():
+                df = df.withColumn(column_name, col(column_name).cast(IntegerType()))
+            
+            # Check if the column type needs to be converted to float and limit to 2 decimal places
+            elif isinstance(value, str) and '.' in value and '@' not in value:
+                df = df.withColumn(column_name, col(column_name).cast(FloatType()))
+                df = df.withColumn(column_name, format_number(col(column_name), 2))
+                df = df.withColumn(column_name, col(column_name).cast(FloatType()))
+                
         return df
 
-    def ler_csv(self, spark):
-        '''O método "criar" lê uma pasta que contém arquivos CSVs, inicialmente gerando um dataframe sem header e posteriormente retornando um dataframe com header.'''
+    def read_csv(self, spark):
+        '''The "read_csv" method reads a folder that contains CSV files, initially generating a dataframe without header and then returning a dataframe with it.'''
 
-        self.path_completo = self.csv_path + self.categoria + '.csv'
-        print(self.path_completo)
-        # Lendo os arquivos CSVs dentro do path
+        self.complete_path = self.csv_path + self.category + '.csv'
+        print(self.complete_path)
+
         try:
-            self.df_bruto = spark.read.csv(self.path_completo, sep=";", header=False, inferSchema=True)
-
+            self.raw_df = spark.read.csv(self.complete_path, sep=";", header=False, inferSchema=True)
         except:
-            print('O path não existe. Por favor, insira um path válido.\nPode ser que a "categoria" passada não seja "clients", "transaction_in" ou "transaction_out".')
+            print('The path does not exist. Please, insert a valid path.\nThe "category" passed might not be "clients", "transaction_in" or "transaction_out" or similar.')
             return 0
-        
-        # Adicionando o header correto ao dataframe criado
-        self.df = self._adicionar_header()
-        self.df = self._corrigir_schema(self.df)
+            
+        # Fix the dataframe
+        self.df = self._add_header()
+        self.df = self._fix_schema(self.df)
         return self.df
-    
-    def juntar_csv(self,df_col_fraudes, df_transacoes):
-        # Une as informações dos dataframes df e df_transacoes com base nas colunas "id", "cliente_id", "valor" e "data"
-        self.temp_fraudes = df_col_fraudes.join(df_transacoes, ["id", "cliente_id", "valor", "data"], "left_outer")
+        
+    def join_csv(self, df_fraud_cols, df_transactions):
+        '''The "join_csv" method aims to merge two dataframes and filter the final dataframe to only include specific columns.'''
 
-        # Seleciona as colunas desejadas
-        self.temp_fraudes = self.temp_fraudes.select(col("id"), col("cliente_id"), col("valor"), col("data"), col("suspeita_de_fraude"))
+        self.temp_frauds = df_fraud_cols.join(df_transactions, ["id", "cliente_id", "valor", "data"], "left_outer")
 
-        return self.temp_fraudes
+        self.temp_frauds = self.temp_frauds.select(col("id"), col("cliente_id"), col("valor"), col("data"), col("suspeita_de_fraude"))
+
+        return self.temp_frauds
