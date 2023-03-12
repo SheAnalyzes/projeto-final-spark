@@ -1,7 +1,8 @@
 from pyspark.sql.window import Window
 from pyspark.sql.functions import lag, unix_timestamp, when, col
+from classes.class_dataframe import Dataframe
 
-class Fraudes:
+class Fraudes(Dataframe):
     '''A classe Fraudes procura identificar as fraudes presentes nos dataframes de transação bancária.'''
     
     def __init__ (self, df_transacoes):
@@ -25,7 +26,7 @@ class Fraudes:
         df = df.withColumn("diff", col("data_segundos") - col("data_anterior_segundos"))
 
         # Criando coluna que determina se houve fraude
-        self.df = df.withColumn("fraudes", when(col("diff") < 120, 'Fraude').otherwise('Sem fraude'))
+        self.df = df.withColumn("suspeita_de_fraude", when(col("diff") < 120, 'valida').otherwise('invalida'))
 
         return self.df
     
@@ -33,11 +34,15 @@ class Fraudes:
         '''Este método cria dataframes que contém colunas sinalizando suspeita ou não de fraudes.'''        
         
         df_col_fraudes = self._identificar_fraudes()
+        self.df_fraudes = super().juntar_csv(df_col_fraudes, self.df_transacoes)
+        return self.df_fraudes
 
+'''
         # Une as informações dos dataframes df e df_transacoes com base nas colunas "id", "cliente_id", "valor" e "data"
         self.df_fraudes = df_col_fraudes.join(self.df_transacoes, ["id", "cliente_id", "valor", "data"], "left_outer")
 
         # Seleciona as colunas desejadas
         self.df_fraudes = self.df_fraudes.select(col("id"), col("cliente_id"), col("valor"), col("data"), col("fraudes"))
-
-        return self.df_fraudes
+'''
+        
+    
