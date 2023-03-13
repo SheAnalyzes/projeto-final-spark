@@ -24,8 +24,9 @@ if __name__ == '__main__':
     df_transacoes_out = Dataframe(csv_path,'transaction-out*').read_csv(spark) 
 
     # Criando df_fraudes para substituir o df_transacoes no modelo relacional
+    column_name = 'categoria'
+    condition_column = 'valor'
     df_fraudes = Fraud(df_transacoes).create_fraud_df()
-    # df_fraudes = Dataframe(df_fraudes).add_coluna(df_fraudes,'categoria')
 
     df_fraudes.printSchema()
     df_fraudes.show()
@@ -48,12 +49,12 @@ if __name__ == '__main__':
     conexao_database = Database(jdbc_url=jdbc_url, database=database, username=username, password=password, driver=driver)
     
     # Passando para o banco as tabelas usadas pelo projeto em SQL
-    tabela_clientes = conexao_database.criar_tabela(df_clientes, client_table_name)
-    tabela_transacoes_in = conexao_database.criar_tabela(df_transacoes_in,transaction_in_table_name)
-    tabela_transacoes_out = conexao_database.criar_tabela(df_transacoes_out, transaction_out_table_name)
+    tabela_clientes = conexao_database.create_table(df_clientes, client_table_name)
+    tabela_transacoes_in = conexao_database.create_table(df_transacoes_in,transaction_in_table_name)
+    tabela_transacoes_out = conexao_database.create_table(df_transacoes_out, transaction_out_table_name)
 
     # Passando para o banco as tabelas usadas pelo projeto em SQL
-    tabela_fraudes = conexao_database.criar_tabela(df_fraudes, fraud_table_name)
+    tabela_fraudes = conexao_database.create_table(df_fraudes, fraud_table_name)
 
     # Finalizando sessão do Spark
     spark.stop()

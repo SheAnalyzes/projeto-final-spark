@@ -1,4 +1,4 @@
-from pyspark.sql.functions import col, to_timestamp, format_number
+from pyspark.sql.functions import col, to_timestamp, when, round
 from pyspark.sql.types import IntegerType, FloatType
 from pyspark.sql import Row
 
@@ -52,9 +52,7 @@ class Dataframe():
             
             # Check if the column type needs to be converted to float and limit to 2 decimal places
             elif isinstance(value, str) and '.' in value and '@' not in value:
-                df = df.withColumn(column_name, col(column_name).cast(FloatType()))
-                df = df.withColumn(column_name, format_number(col(column_name), 2))
-                df = df.withColumn(column_name, col(column_name).cast(FloatType()))
+                df = df.withColumn(column_name, round(col(column_name).cast(FloatType()), 2))
                 
         return df
 
@@ -83,3 +81,9 @@ class Dataframe():
         self.temp_frauds = self.temp_frauds.select(col("id"), col("cliente_id"), col("valor"), col("data"), col("suspeita_de_fraude"))
 
         return self.temp_frauds
+
+    def add_column(self, column_name, condition_column, df):
+        '''This method aims to add an column inside the dataframe based of some "when" condition.'''
+
+        df = df.withColumn(column_name, when(col(condition_column) > 0, 'entrada').otherwise('saida'))
+        return df

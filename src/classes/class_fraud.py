@@ -32,8 +32,10 @@ class Fraud(Dataframe):
 
     def create_fraud_df(self):
         '''This method generates dataframes that include columns signaling the presence or absence of fraud suspicions.'''
-
+        column_name = 'categoria'
+        condition_column = 'valor'
         df_col_frauds = self._identify_frauds()
         self.fraud_df = super().join_csv(df_col_frauds, self.df_transactions)
+        self.fraud_df = super().add_column(column_name, condition_column, self.fraud_df)
         return self.fraud_df
     
