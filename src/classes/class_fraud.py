@@ -1,8 +1,8 @@
 from pyspark.sql.window import Window
 from pyspark.sql.functions import lag, unix_timestamp, when, col
-from classes.class_dataframe import Dataframe
+from classes.fraud_utils import FraudUtils
 
-class Fraud(Dataframe):
+class Fraud():
     '''The Fraud class aims to provide different methods capable of detecting and analyzing potential frauds in banking transaction dataframes.'''
 
     def __init__ (self, df_transactions):
@@ -32,10 +32,12 @@ class Fraud(Dataframe):
 
     def create_fraud_df(self):
         '''This method generates dataframes that include columns signaling the presence or absence of fraud suspicions.'''
+
         column_name = 'categoria'
         condition_column = 'valor'
+
         df_col_frauds = self._identify_frauds()
-        self.fraud_df = super().join_csv(df_col_frauds, self.df_transactions)
-        self.fraud_df = super().add_column(column_name, condition_column, self.fraud_df)
+        self.fraud_df = FraudUtils.join_csv(df_col_frauds, self.df_transactions)
+        self.fraud_df = FraudUtils.add_category_column(column_name, condition_column, self.fraud_df)
         return self.fraud_df
     

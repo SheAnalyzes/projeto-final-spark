@@ -1,4 +1,4 @@
-from classes.class_dataframe import Dataframe
+from classes.class_dataframe import CsvDataframe
 from classes.class_spark import PySpark
 from classes.class_database import Database
 from classes.class_fraud import Fraud
@@ -16,12 +16,12 @@ if __name__ == '__main__':
 
     # Criando dataframe para modelagem relacional
     csv_path = getenv('CSV_PATH')
-    df_clientes = Dataframe(csv_path,'clients*').read_csv(spark)
-    df_transacoes = Dataframe(csv_path,'transaction*').read_csv(spark)
+    df_clientes = CsvDataframe(csv_path,'clients*').read_csv(spark)
+    df_transacoes = CsvDataframe(csv_path,'transaction*').read_csv(spark)
 
     # Criando dataframe para projeto-sql
-    df_transacoes_in = Dataframe(csv_path,'transaction-in*').read_csv(spark)
-    df_transacoes_out = Dataframe(csv_path,'transaction-out*').read_csv(spark) 
+    df_transacoes_in = CsvDataframe(csv_path,'transaction-in*').read_csv(spark)
+    df_transacoes_out = CsvDataframe(csv_path,'transaction-out*').read_csv(spark) 
 
     # Criando df_fraudes para substituir o df_transacoes no modelo relacional
     column_name = 'categoria'

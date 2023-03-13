@@ -1,10 +1,12 @@
-from pyspark.sql.functions import col, to_timestamp, when, round
+from pyspark.sql.functions import col, to_timestamp, round
 from pyspark.sql.types import IntegerType, FloatType
 from pyspark.sql import Row
+from classes.dataframe_cleaner import DataframeCleaner
+from pyspark.sql.utils import AnalysisException
 
 
 
-class Dataframe():
+class CsvDataframe():
     '''The Dataframe class aims to provide methods capable of reading CSV files, generating dataframes, and modifying them.'''
 
     def __init__(self, csv_path, category):
@@ -68,22 +70,20 @@ class Dataframe():
             print('The path does not exist. Please, insert a valid path.\nThe "category" passed might not be "clients", "transaction_in" or "transaction_out" or similar.')
             return 0
             
-        # Fix the dataframe
+        # Fix and clean the dataframe
         self.df = self._add_header()
         self.df = self._fix_schema(self.df)
+        self.df = self.clean_data(self.df)
         return self.df
+    
+    def clean_data(self, df):
+        '''This method cleans the dataframe based in a collection of methods of DataframeUtils class.'''
         
-    def join_csv(self, df_fraud_cols, df_transactions):
-        '''The "join_csv" method aims to merge two dataframes and filter the final dataframe to only include specific columns.'''
+        cleaner_df = DataframeCleaner.drop_empty_rows(df)
+        cleaner_df = DataframeCleaner.drop_duplicate(cleaner_df)
 
-        self.temp_frauds = df_fraud_cols.join(df_transactions, ["id", "cliente_id", "valor", "data"], "left_outer")
+        # Only drop empty "valor" columns of transactions
+        if self.category != 'clients*':
+            cleaner_df = DataframeCleaner.drop_empty_valor(cleaner_df, "valor")
 
-        self.temp_frauds = self.temp_frauds.select(col("id"), col("cliente_id"), col("valor"), col("data"), col("suspeita_de_fraude"))
-
-        return self.temp_frauds
-
-    def add_column(self, column_name, condition_column, df):
-        '''This method aims to add an column inside the dataframe based of some "when" condition.'''
-
-        df = df.withColumn(column_name, when(col(condition_column) > 0, 'entrada').otherwise('saida'))
-        return df
+        return cleaner_df
