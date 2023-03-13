@@ -1,7 +1,7 @@
 from pyspark.sql.functions import col, to_timestamp, round
 from pyspark.sql.types import IntegerType, FloatType
 from pyspark.sql import Row
-from classes.dataframe_cleaner import DataframeCleaner
+from classes.utils.dataframe_cleaner import DataframeCleaner
 from pyspark.sql.utils import AnalysisException
 
 
@@ -85,5 +85,15 @@ class CsvDataframe():
         # Only drop empty "valor" columns of transactions
         if self.category != 'clients*':
             cleaner_df = DataframeCleaner.drop_empty_valor(cleaner_df, "valor")
-
+        else:
+            cleaner_df = DataframeCleaner.format_lowercase(cleaner_df,'nome')
+            cleaner_df = DataframeCleaner.remove_extra_space(cleaner_df,'nome')
+            cleaner_df = DataframeCleaner.remove_accents(cleaner_df, 'nome')
         return cleaner_df
+    
+    def save_csv_file(self, df, file_name):
+        '''This method saves the df in a CSV file.'''
+
+        df.write.format("csv").option("header", "true").option("delimiter", ";").save("../reports/" + file_name + '.csv')
+        
+        return

@@ -27,9 +27,6 @@ class Database():
             .option("user", self.username) \
             .option("password", self.password) \
             .option("driver", self.driver) \
+            .option("batchsize", 100) \
             .mode("overwrite") \
             .save()
-
-        def show_table (self):
-            '''This method aims to show the tables already created in the database.'''
-            pass

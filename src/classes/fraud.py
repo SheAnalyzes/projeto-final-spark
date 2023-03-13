@@ -1,6 +1,6 @@
 from pyspark.sql.window import Window
 from pyspark.sql.functions import lag, unix_timestamp, when, col
-from classes.fraud_utils import FraudUtils
+from classes.utils.fraud_utils import FraudUtils
 
 class Fraud():
     '''The Fraud class aims to provide different methods capable of detecting and analyzing potential frauds in banking transaction dataframes.'''

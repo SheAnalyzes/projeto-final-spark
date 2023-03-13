@@ -1,9 +1,10 @@
-from classes.class_dataframe import CsvDataframe
-from classes.class_spark import PySpark
-from classes.class_database import Database
-from classes.class_fraud import Fraud
+from classes.dataframe import CsvDataframe
+from classes.spark import PySpark
+from classes.database import Database
+from classes.fraud import Fraud
 from dotenv import load_dotenv
 from os import getenv
+
 
 if __name__ == '__main__':
     
@@ -30,8 +31,8 @@ if __name__ == '__main__':
 
     df_fraudes.printSchema()
     df_fraudes.show()
-    df_transacoes.printSchema()
-    df_transacoes.show()
+    df_clientes.printSchema()
+    df_clientes.show()
 
     # Escrevendo o DataFrame no SQL Server através do JDBC
     
