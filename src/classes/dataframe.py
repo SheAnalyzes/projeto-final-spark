@@ -62,7 +62,6 @@ class CsvDataframe():
         '''The "read_csv" method reads a folder that contains CSV files, initially generating a dataframe without header and then returning a dataframe with it.'''
 
         self.complete_path = self.csv_path + self.category + '.csv'
-        print(self.complete_path)
 
         try:
             self.raw_df = spark.read.csv(self.complete_path, sep=";", header=False, inferSchema=True)
@@ -73,7 +72,6 @@ class CsvDataframe():
         # Fix and clean the dataframe
         self.df = self._add_header()
         self.df = self._fix_schema(self.df)
-        self.df = self.clean_data(self.df)
         return self.df
     
     def clean_data(self, df):
@@ -94,6 +92,4 @@ class CsvDataframe():
     def save_csv_file(self, df, file_name):
         '''This method saves the df in a CSV file.'''
 
-        df.write.format("csv").option("header", "true").option("delimiter", ";").save("../reports/" + file_name + '.csv')
-        
-        return
+        df.write.format("csv").option("header", "true").save("/mnt/c/Users/Mariana/Desktop/Projeto-Final/Spark/reports/" + file_name)

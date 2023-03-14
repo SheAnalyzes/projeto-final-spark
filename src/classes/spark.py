@@ -5,6 +5,7 @@ class PySpark():
     '''The Spark class aims to provide methods capable of starting and ending PySpark sessions.'''
 
     def __init__(self, path_jdbc_driver):
+
         self.path_jdbc_driver = path_jdbc_driver
         
         self.conf = SparkConf().setAppName("ETL") \
@@ -17,9 +18,11 @@ class PySpark():
         self.spark = SparkSession.builder \
             .config(conf=self.conf) \
             .getOrCreate()
+        
+        self.spark.sparkContext.setLogLevel("ERROR")
         return self.spark
     
-    def end_session(self):
+    def end_session(self, spark):
         '''This method ends the PySpark session.'''
-
-        self.spark.stop()
+        
+        spark.stop()
