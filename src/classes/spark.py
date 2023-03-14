@@ -21,8 +21,5 @@ class PySpark():
         
         self.spark.sparkContext.setLogLevel("ERROR")
         return self.spark
-    
-    def end_session(self, spark):
-        '''This method ends the PySpark session.'''
+
         
-        spark.stop()

@@ -24,9 +24,10 @@ class Screen():
                 for key, value in df_dict.items():
                     print(key)
                     value.show()
+                    value.printSchema()
                 self.wait(3)
-                resposta = 'indefinida'
-                
+                return 0
+            
             elif resposta == 'n':
                 return 0
             else:
