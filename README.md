@@ -71,8 +71,13 @@ tar -xvzf spark-3.3.2-bin-hadoop3.tgz
 pip install -q findspark
 ```
 
-8. Criação do .gitignore
-9. Salvando as versões usadas: `pip freeze > requirements.txt`
+8. Adicione o arquivo jar (que se encontra na pasta [jars](https://github.com/SheAnalyzes/projeto-final-spark/tree/main/jars)) na pasta '*spark-3.3.2-bin-hadoop3/jars*'
+9. Digite em seu terminal o seguinte comando para alterar o path:
+   ```
+   export PYSPARK_SUBMIT_ARGS='--driver-class-path /mnt/c/Users/Mariana/spark-3.3.2-bin-hadoop3/jars/mssql-jdbc-12.2.0.jre8.jar pyspark-shell'
+   ```
+10. Criação do .gitignore
+11. Salvando as versões usadas: `pip freeze > requirements.txt`
 
 ## Criação das funções que fazem a leitura do csv
 
