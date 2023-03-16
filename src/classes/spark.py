@@ -2,7 +2,7 @@ from pyspark.sql import SparkSession
 from pyspark import SparkConf
 
 class PySpark():
-    '''The Spark class aims to provide methods capable of starting and ending PySpark sessions.'''
+    '''The Spark class aims to provide methods capable of starting and setting PySpark sessions.'''
 
     def __init__(self, path_jdbc_driver):
 

@@ -31,7 +31,6 @@ if __name__ == '__main__':
 
     stage_3 = False
     stage_4 = False
-    stage_5 = False
 
     while True:
     
@@ -131,8 +130,8 @@ if __name__ == '__main__':
                 print("Aguarde...\nSalvando operações no Banco...")
 
                 # Create table in database and populate it based in the dataframe
-                client_table = database_connection.create_table(clients_df, 'clientes')
-                transaction_table = database_connection.create_table(frauds_df, 'transacoes')
+                client_table = database_connection.create_table(clients_df, 'clientes_teste')
+                transaction_table = database_connection.create_table(frauds_df, 'transacoes_teste')
                 screen.wait(3)
             else:
                 print("Parece que você está tentando salvar as tabelas no Banco sem ter cumprido as etapas 2 e 3!\n")

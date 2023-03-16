@@ -78,10 +78,12 @@ class CsvDataframe():
         # Only drop empty "valor" columns of transactions
         if self.category != 'clients*':
             cleaner_df_obj.drop_empty_valor("valor")
+            self.df = cleaner_df_obj.df
         else:
             cleaner_df_obj.format_lowercase('nome')
             cleaner_df_obj.remove_extra_space('nome')
             cleaner_df_obj.remove_accents('nome')
+            self.df = cleaner_df_obj.df
         
         return cleaner_df_obj.df
     

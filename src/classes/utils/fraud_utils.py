@@ -15,7 +15,7 @@ class FraudUtils:
 
         self.frauds_df = self.frauds_df.select(col("id"), col("cliente_id"), col("valor"), col("data_transacao"), col("fraude"))
 
-    def add_category_column(self,column_name, condition_column) -> DataFrame:
+    def add_category_column(self,column_name, condition_column):
         '''This method aims to add a column inside the dataframe based in some "when" condition.'''
 
         self.frauds_df = self.frauds_df.withColumn(column_name, when(col(condition_column) > 0, 'entrada').otherwise('saida'))

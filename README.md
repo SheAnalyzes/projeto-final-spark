@@ -36,22 +36,30 @@ Você pode encontrar o link do desafio [aqui](https://docs.google.com/document/d
 
 ```
 ├── README.md
-├── estrutura.txt
+├── requirements.txt
+├── image
+│   └── README
+│       ...
 ├── files
 │   ...
 ├── jars
 │   └── mssql-jdbc-12.2.0.jre8.jar
-├── requirements.txt
 └── src
     ├── init.py
     ├── classes
-    │   ├── init.py
-    │   ├── class_database.py
-    │   ├── class_dataframe.py
-    │   ├── class_fraudes.py
-    │   └── class_spark.py
+    │   ├── __init__.py
+    │   ├── csv_dataframe.py
+    │   ├── database.py
+    │   ├── fraud.py
+    │   ├── screen.py
+    │   ├── spark.py
+    │   └── utils
+    │       ├── dataframe_cleaner.py
+    │       └── fraud_utils.py
+    ├── __init__.py
     └── main.py
-4 directories, 87 files
+    
+11 directories, 119 files
 ```
 
 ## Instalando as bibliotecas
@@ -72,7 +80,7 @@ pip install -q findspark
 ```
 
 8. Adicione o arquivo jar (que se encontra na pasta [jars](https://github.com/SheAnalyzes/projeto-final-spark/tree/main/jars)) na pasta '*spark-3.3.2-bin-hadoop3/jars*'
-9. Digite em seu terminal o seguinte comando para alterar o path:
+9. Digite em seu terminal o seguinte comando, lembrando de alterar o path até o arquivo .jar:
    ```
    export PYSPARK_SUBMIT_ARGS='--driver-class-path /mnt/c/Users/Mariana/spark-3.3.2-bin-hadoop3/jars/mssql-jdbc-12.2.0.jre8.jar pyspark-shell'
    ```
@@ -115,6 +123,21 @@ Para fazer a instalação das aplicações, siga os passos a seguir:
 3. Certifique-se de ter o Python e o pip instalados em seu sistema.
 4. Execute o comando a seguir: `pip install -r requirements.txt`
 5. Execute a aplicação dando o comando '*python3 main.py*' em seu terminal.
+
+## Notebook - Azure Synapse Analytics
+
+O mesmo projeto foi reproduzido no Azure Synapse Analytics seguindo as etapas:
+
+1. Criar Storage Account (Datalake).
+2. Criar containers no Datalake. 
+3. Fazer upload dos arquivos CSV para o container.
+4. Criar workspace no Azure Synapse Analytics.
+5. Criar spark pool.
+6. Criar notebook spark e o configurar com o pool.
+7. Executar notebook spark.
+
+A princípio o pool será inicializado, demorando alguns minutos, mas em seguida a execução será rápida.
+O acesso ao notebook desenvolvido pode ser encontrado no repositório.
 
 ## Grupo - SheAnalyses
 
